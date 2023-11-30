@@ -69,8 +69,8 @@ char *replace(char *str, char *substr, char *new_substr) {
     // 3. zapsat obsah new_substr do str na spravne misto
     // 4. nezapomenout na '\0'
 
-    int pos;
-    if ((pos = find_substr(str, substr) == -1))
+    int pos = find_substr(str, substr);
+    if (pos == -1)
         return str;
         
     if (strlen(substr)>strlen(new_substr)) {
