@@ -35,7 +35,6 @@ int find_substr(char *str, char *substr) {
 // Replace same-length substrings in a string.
 void replace_same_length(char *str, char *substr, char *new_substr) {
     int pos = find_substr(str, substr);
-    printf ("pos: %d\n", pos);
     if (pos == -1)
     {
         return;
@@ -69,10 +68,7 @@ char *replace(char *str, char *substr, char *new_substr) {
     // 3. zapsat obsah new_substr do str na spravne misto
     // 4. nezapomenout na '\0'
 
-    int pos;
-    if ((pos = find_substr(str, substr) == -1))
-        return str;
-        
+    int pos = find_substr(str, substr);
     if (strlen(substr)>strlen(new_substr)) {
         for (int i=0; new_substr[i] != '\0'; i++) {
             str[pos+i] = new_substr[i];
@@ -81,29 +77,22 @@ char *replace(char *str, char *substr, char *new_substr) {
         for (int j=(pos+strlen(new_substr)); str[j] != '\0'; j++) {
             str[j] = str[j+d];
         }
-        char *tmp = realloc(str, (strlen(str)-d)*sizeof(char));
-        if (tmp == NULL) {
-            free(str);
-            return NULL;
+        str = realloc(str, (strlen(str)-d)*sizeof(char));
+        str[strlen(str)] = '\0';
+    }
+
+    if (strlen(substr)<strlen(new_substr)) {
+        int d = strlen(new_substr)-strlen(substr);
+        str = realloc(str, (strlen(str)+d)*sizeof(char));
+        for (int i=0; new_substr[i] != '\0'; i++) {
+            str[pos+i] = new_substr[i];
         }
-        str = tmp;
         str[strlen(str)] = '\0';
     }
 
     else {
-        int d = strlen(new_substr)-strlen(substr);
-        char *tmp = realloc(str, (strlen(str)+d)*sizeof(char));
-        if (tmp == NULL) {
-            free(str);
-            return NULL;
-        }
-        for (int i=0; new_substr[i] != '\0'; i++) {
-            str[pos+i] = new_substr[i];
-        }
-        str = tmp;
-        str[strlen(str)] = '\0';
+        replace_same_length(str, substr, new_substr);
     }
-
     return str;
 }
 
